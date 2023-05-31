@@ -1,6 +1,7 @@
 # Wav2ToBI
 
-**Under Construction**
+***Under Construction***
+
 This repository contains code used in the paper "[Wav2ToBI: a new approach to automatic ToBI transcription][paper-link]" accepted at Interspeech 2023.
 
 ## Intonational Phrase Boundary Detection
