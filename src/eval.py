@@ -161,9 +161,9 @@ def load_test(file_test):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Evaluating test performance')
-    parser.add_argument('--file_eval', type=str, default='/content/drive/MyDrive/BUR/tone_json_files/valid_json_sliding_pitch_detection.json', help='Path to ground truth labels')
-    parser.add_argument('--file_test', type=str, default='/content/drive/MyDrive/BUR/tone_json_output_files/valid_1layer_30_sliding_128_pitch_detetection_peak_prev.txt', help='Path to predicted labels')
-    parser.add_argument('--file_ind', type=int, default=4, help='Index of file to plot')
+    parser.add_argument('--file_eval', type=str, default='/home/ubuntu/Wav2ToBI/data/output_json/test.json', help='Path to ground truth labels')
+    parser.add_argument('--file_test', type=str, default='/home/ubuntu/Wav2ToBI/data/output_json/test_output.txt', help='Path to predicted labels')
+    parser.add_argument('--file_ind', type=int, default=0, help='Index of file to plot')
     parser.add_argument('--file_out', type=str, default='example_plot', help='Name of output file')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--peak', action='store_true')
@@ -177,11 +177,11 @@ if __name__ == '__main__':
     content_test = load_test(args.file_test)
     
     # Example Plotting
-    plt.rcParams["figure.figsize"] = (4,3)
+    plt.rcParams["figure.figsize"] = (20,3)
     plt.plot(content_test[args.file_ind][1],'r--', label = "prediction")
     plt.plot(content_eval[args.file_ind]["label"],label = "ground_truth", color = "blue")
-    plt.xlim(0, 200)
-    plt.ylim(0, 6)
+    plt.xlim(0, 1000)
+    plt.ylim(0, 1.2)
     plt.legend(loc = 'upper right', fontsize = 'large')
     plt.savefig(args.file_out + '.png', dpi=300, bbox_inches='tight')
 

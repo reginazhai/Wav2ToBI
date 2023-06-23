@@ -44,13 +44,13 @@ class SplitWavAudioMubin():
         
     def multiple_split(self, sec_per_split, window_size):
         total_mins = math.ceil(self.get_duration())
-        print(total_mins)
+        print("Total Seconds:", total_mins)
         total_time = np.arange(0.0,total_mins, window_size)
         for tim in range(len(total_time)):
             i = total_time[tim]
             split_fn = str(tim) + '_' + self.filename
             self.single_split(i, i+sec_per_split, split_fn)
-            print(str(i) + ' Done')
+            print("Time:", str(i) + ' Done')
             if sec_per_split >= (total_mins - i):
                 print('All splited successfully')
                 break
@@ -133,7 +133,7 @@ if __name__ == '__main__':
             totalPath = args.wfilepath + total_doc[num][0][3]
             total_break = []
             total_time = int(soundfile.info(totalPath).frames/320)
-            print(total_time)
+            print("Total Time:", total_time)
             doc_name = total_doc[num][0][3]
             print("Document name:", wavPath)
             ## Time step start from 1, indicating that it is the end of the time segment
@@ -176,14 +176,13 @@ if __name__ == '__main__':
                     break
                 
                 if (step - cur_start == 998):
-                    import pdb; pdb.set_trace()
                     doc_count += 1
                     json_file.append({'path': wavPath, "label": total_break})
                     wavPath = args.wfilepath + 'sliding/' + str(doc_count) + '_' + total_doc[num][0][3]
                     total_break = []
                     total_count +=1
                     step = step - 498
-                    print(step)
+                    print("Step:", step)
                     cur_start = step
                     cur_ind = next_start_ind
                     continue
@@ -194,7 +193,6 @@ if __name__ == '__main__':
                 elif (next_start_ind >= len(total_list)):
                     next_start_ind = len(total_list)
                 step += 1
-        print(total_count)
 
     with open(args.output_path, 'w') as f:
         json.dump(json_file, f)

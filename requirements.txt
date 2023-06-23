@@ -5,3 +5,5 @@ pydub
 ffmpeg
 matplotlib
 soundfile
+librosa
+scikit-learn

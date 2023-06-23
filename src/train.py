@@ -20,7 +20,6 @@ if __name__ == '__main__':
     parser.add_argument('--file_train', type=str, default=None, help='Path to the training dataset (a JSON file)')
     parser.add_argument('--file_valid', type=str, default=None, help='Path to the validation dataset (a JSON file)')
     parser.add_argument('--file_eval', type=str, default='/home/ubuntu/Wav2ToBI/data/output_json/test.json', help='Path to the evaluation (test) dataset (a JSON file)')
-    parser.add_argument('--lstm_hidden_size', type=int, default=256, help='LSTM hidden size')
     parser.add_argument('--num_epochs', type=int, default=10, help='Number of epochs')
     parser.add_argument('--batch_size', type=int, default=1, help='Batch size')
     parser.add_argument('--file_output', type=str, default='/home/ubuntu/Wav2ToBI/data/output_json/test_output.txt', help='Path for the output file (output.txt)')
@@ -80,7 +79,7 @@ if __name__ == '__main__':
 
     metric = load_metric("mse")
     dataset = load_json_dataset_forAudioFrameClassification(args.file_train,args.file_eval,args.file_valid)
-    model = Wav2Vec2ForAudioFrameClassification_custom.from_pretrained(args.model_checkpoint, num_labels=1, lstm_hidden_size = args.lstm_hidden_size)
+    model = Wav2Vec2ForAudioFrameClassification_custom.from_pretrained(args.model_checkpoint, num_labels=1)
 
     feature_extractor = AutoFeatureExtractor.from_pretrained(
         "facebook/wav2vec2-base",
