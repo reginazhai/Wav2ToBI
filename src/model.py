@@ -9,8 +9,6 @@ from transformers import Wav2Vec2Model, Wav2Vec2ForAudioFrameClassification
 
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
-# TODO: Add hidden layers as inputs to config
-
 class Wav2Vec2ForAudioFrameClassification_custom(Wav2Vec2ForAudioFrameClassification):
     def __init__(self, config):
         super().__init__(config)

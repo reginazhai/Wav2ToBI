@@ -2,4 +2,6 @@ datasets
 transformers
 praat-parselmouth
 pydub
+ffmpeg
+matplotlib
 soundfile

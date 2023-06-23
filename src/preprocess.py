@@ -19,6 +19,8 @@ ORIG_PITCH_MAP = {
     'L*+!H': 'L*+H'
 }
 
+DEBUG = False
+
 # Splitting .wav files
 # Code Splitting adapted from https://stackoverflow.com/questions/37999150/how-to-split-a-wav-file-into-multiple-wav-files @Shariful Islam Mubin
 
@@ -36,6 +38,8 @@ class SplitWavAudioMubin():
         t1 = from_sec * 1000
         t2 = to_sec * 1000
         split_audio = self.audio[t1:t2]
+        if not os.path.exists(self.folder + '/sliding/'):
+            os.makedirs(self.folder + '/sliding/')
         split_audio.export(self.folder + '/sliding/' + split_filename, format="wav")
         
     def multiple_split(self, sec_per_split, window_size):
@@ -57,11 +61,11 @@ if __name__ == '__main__':
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--breaks', action='store_true')
     group.add_argument('--tones', action='store_true')
-    parser.add_argument('--bfilepath', type=str, default='/content/drive/MyDrive/BDC/tone_files/READ/', help='Folder of .break file')
-    parser.add_argument('--wfilepath', type=str, default='/content/drive/MyDrive/BDC/wav_files/READ/', help='Folder of .wav file')
+    parser.add_argument('--bfilepath', type=str, default='/home/ubuntu/Wav2ToBI/data/break_files/', help='Folder of .break file')
+    parser.add_argument('--wfilepath', type=str, default='/home/ubuntu/Wav2ToBI/data/wav_files/', help='Folder of .wav file')
     parser.add_argument('--sec_per_split', type=int, default=20, help='Duration of each split')
     parser.add_argument('--window_size', type=int, default=10, help='Window size')
-    parser.add_argument('--output_path', type=str, default='/content/drive/MyDrive/BDC/tone_json_files/READ/test.json', help='Output path')
+    parser.add_argument('--output_path', type=str, default='/home/ubuntu/Wav2ToBI/data/output_json/test.json', help='Output path')
     args = parser.parse_args()
 
     total_tones = {}
@@ -78,8 +82,8 @@ if __name__ == '__main__':
     total_doc = []
     for i in range(len(bfiles)):
         bfilen = bfiles[i]
-        wfile = bfilen[:-6] + '.wav'
-        if (bfilen[0] != 'h') or (wfile not in wfiles):
+        wfile = bfilen[:-4] + '.wav'
+        if (wfile not in wfiles):
             continue
         wavfile = SplitWavAudioMubin(args.wfilepath, wfile).multiple_split(args.sec_per_split, args.window_size)
         data = open(args.bfilepath + bfilen,mode = 'rb')
@@ -90,36 +94,33 @@ if __name__ == '__main__':
             line_count += 1
             line = line.strip()
             parts = line.split()
-        if (len(parts) > 3):
-            parts = parts[:3]
-        elif (len(parts) < 3):
-            continue
-        break_time = parts[0].decode("utf-8")
-        if (is_float(break_time) and break_time != "NaN"):
-            parts[0] = float(break_time)
-        else:
-            continue
-        parts[2] = parts[2].decode("utf-8")
-        if (parts[2][-1] == ";") or (parts[2][-1] == "?"):
-            parts[2] = parts[2][:len(parts[2])-1]
-        
-        if ('H' not in parts[2]) and ('L' not in parts[2]):
-            parts[2] = "*"
-
-        total_tones[parts[2]] = total_tones.get(parts[2], 0) + 1
-        bfilen_mod = bfilen[:-6] + '.wav'
-        if (bfilen_mod in wfiles):
-            parts.append(bfilen_mod)
-        else:
-            continue
-        total_b.append(parts)
+            if (len(parts) > 3):
+                parts = parts[:3]
+            elif (len(parts) < 3):
+                continue
+            break_time = parts[0].decode("utf-8")
+            if (is_float(break_time) and break_time != "NaN"):
+                parts[0] = float(break_time)
+            else:
+                continue
+            parts[2] = parts[2].decode("utf-8")
+            if (parts[2][0] not in ['1','2','3','4']):
+                parts[2] = "0"
+            else:
+                parts[2] = parts[2][0]
+            bfilen_mod = bfilen[:-4] + '.wav'
+            if (bfilen_mod in wfiles):
+                parts.append(bfilen_mod)
+            else:
+                continue
+            total_b.append(parts)
         total_doc.append(total_b)
 
     json_file = []
     doc_count = 0
     total_count = 0
-    # TODO: modify the wave path to the correct wave path
-    wavPath = '/content/drive/MyDrive/BDC/wav_files/READ/sliding/'+ str(doc_count) + '_' + total_doc[0][0][3]
+    # NOTE: modify the wave path to the correct wave path
+    wavPath = args.wfilepath + 'sliding/'+ str(doc_count) + '_' + total_doc[0][0][3]
     total_break = [wavPath]
 
     for num in range(len(total_doc)):
@@ -127,10 +128,9 @@ if __name__ == '__main__':
         total_list = total_doc[num]
         if (total_list == []):
             continue
-
-        wavPath = '/content/drive/MyDrive/BDC/wav_files/READ/sliding/' + str(doc_count) + '_' + total_doc[num][0][3]
+        wavPath = args.wfilepath + 'sliding/' + str(doc_count) + '_' + total_doc[num][0][3]
         if os.path.exists(wavPath):
-            totalPath = '/content/drive/MyDrive/BDC/wav_files/READ/' + total_doc[num][0][3]
+            totalPath = args.wfilepath + total_doc[num][0][3]
             total_break = []
             total_time = int(soundfile.info(totalPath).frames/320)
             print(total_time)
@@ -145,32 +145,22 @@ if __name__ == '__main__':
             next_start_ind = 0
             # Current index of the break label
             cur_ind = 0
+            # TODO: Add Tone preprocessing as well
             while step < total_time:
-                if (cur_ind < len(total_list)) and (abs(int(total_list[cur_ind][0]/0.02) - step) <= 8):
-                    cur_sym = total_list[cur_ind][2]
-                    ## FOR BREAK LABELS
-                    if args.breaks:
-                        if (cur_sym[0] == '4'):
-                            total_break.append(1)
-
-                        elif (cur_sym[0] == '3'):
-                            if (abs(int(total_list[cur_ind][0]/0.02) - step) <= 5):
-                                total_break.append(0.5)
-                            elif (step - int(total_list[cur_ind][0]/0.02) > 5):
-                                cur_ind += 1
-                                total_break.append(0)
-                            else:
-                                total_break.append(0)
-
-                    ## FOR PITCH LABELS
-                    if args.tones:
-                        if cur_sym in PITCH_ACC:
-                            total_break.append(1 - abs(int(total_list[cur_ind][0]/0.02) - step)/8)
-                        elif cur_sym in ORIG_PITCH_MAP:
-                            total_break.append(1 - abs(int(total_list[cur_ind][0]/0.02) - step)/8)
-                        else:
+                if (cur_ind < len(total_list)) and (abs(int(total_list[cur_ind][0]/0.02) - step) <= 10):
+                    if (total_list[cur_ind][2][0] == '4'):
+                        total_break.append(1 - abs(int(total_list[cur_ind][0]/0.02) - step)/10)
+                    elif (total_list[cur_ind][2][0] == '3'):
+                        if (abs(int(total_list[cur_ind][0]/0.02) - step) <= 5):
+                            total_break.append(0.5 - abs(int(total_list[cur_ind][0]/0.02) - step)/10)
+                        elif (step - int(total_list[cur_ind][0]/0.02) > 5):
                             cur_ind += 1
                             total_break.append(0)
+                        else:
+                            total_break.append(0)
+                    else:
+                        cur_ind += 1
+                        total_break.append(0)
                     
                 elif (cur_ind < len(total_list)) and (step - int(total_list[cur_ind][0]/0.02) > 8):
                         cur_ind += 1
@@ -185,26 +175,36 @@ if __name__ == '__main__':
                     total_count += 1
                     break
                 
-                if (step - cur_start == 198): #998
+                if (step - cur_start == 998):
+                    import pdb; pdb.set_trace()
                     doc_count += 1
                     json_file.append({'path': wavPath, "label": total_break})
-                    wavPath = '/content/drive/MyDrive/BDC/wav_files/READ/sliding/' + str(doc_count) + '_' + total_doc[num][0][3]
+                    wavPath = args.wfilepath + 'sliding/' + str(doc_count) + '_' + total_doc[num][0][3]
                     total_break = []
                     total_count +=1
-                    step = step - 98 #498
+                    step = step - 498
                     print(step)
                     cur_start = step
                     cur_ind = next_start_ind
                     continue
 
                 # See if the time has past the sliding window
-                if (next_start_ind < len(total_list)) and (int(total_list[next_start_ind][0]/0.02) - cur_start) <= 99: #499
+                if (next_start_ind < len(total_list)) and (int(total_list[next_start_ind][0]/0.02) - cur_start) <= 499:
                     next_start_ind += 1
                 elif (next_start_ind >= len(total_list)):
                     next_start_ind = len(total_list)
                 step += 1
         print(total_count)
-        print(len(total_doc))
 
-    with open(args.output_file, 'w') as f:
+    with open(args.output_path, 'w') as f:
         json.dump(json_file, f)
+
+    # Plot the ground truth for debugging
+    if DEBUG:
+        from matplotlib import pyplot as plt
+        plt.rcParams["figure.figsize"] = (20,3)
+        plt.plot(json_file[0]["label"],label = "ground_truth", color = "blue")
+        plt.xlim(0, 1000)
+        plt.ylim(0, 1.2)
+        plt.legend()
+        plt.savefig('output.png')
