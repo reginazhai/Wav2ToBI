@@ -134,6 +134,15 @@ for data preprocessing as stated in step 1 for both processes.
 #### Prosody Prediction
 
 **UNDER CONSTRUCTION**
+
+Checkpoints reported were uploaded into huggingface hub. Find the desired model among
+`ReginaZ/Wav2ToBI-PA-Flat`, `ReginaZ/Wav2ToBI-PA-Fuzzy`, `ReginaZ/Wav2ToBI-PB-Fuzzy`,
+`ReginaZ/Wav2ToBI-PB-Flat`.
+
+*Note*: The checkpoint for pitch accent detection has lstm hidden size of 128, whereas
+the checkpoint for phrase boundary prediction has hidden size of 256. The parameter can 
+be changed in `src/model.py`
+
 ```
 python src/predict.py
 ```
