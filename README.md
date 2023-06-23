@@ -28,15 +28,16 @@ Sample Data files and format are provided under the `data/` directory.
 1. Data Preprocessing
 
 The break annotation files should be provided under `data/break_files`, and the wav files should be provided
-under `wav_files`. The names of breaks files should match the names of the wav files as shown in the sample.
+under `wav_files`. The names of break files should match the names of the wav files as shown in the sample.
 
 ```
-python src/preprocess.py -h
+python src/break_preprocess.py -h
 
-usage: preprocess.py [-h] (--breaks | --tones) [--bfilepath BFILEPATH] [--wfilepath WFILEPATH] 
-                     [--sec_per_split SEC_PER_SPLIT] [--window_size WINDOW_SIZE] 
-                     [--output_path OUTPUT_PATH]
+usage: break_preprocess.py [-h] [--bfilepath BFILEPATH] [--wfilepath WFILEPATH]
+                           [--sec_per_split SEC_PER_SPLIT] [--window_size WINDOW_SIZE]
+                           [--output_path OUTPUT_PATH]
 ```
+**Currently Only Supports Fuzzy Labeling**
 
 2. Model Training
 
@@ -71,13 +72,71 @@ Model evaluation requires the file containing ground truth `FILE_EVAL` (which ca
 can be obtained from `src/train.py`). An example figure on `FILE_IND` will be outputed, containing the 
 comparison results between model prediction and the ground truth.
 
-### Intonational Boundary Detection using Existing Checkpoint
-
 
 ## Pitch Accent Detection
 
+Sample Data files and format are provided under the `data/` directory. 
 
+### Training Pipeline
 
+1. Data Preprocessing
+
+The tone annotation files should be provided under `data/tone_files`, and the wav files should be provided
+under `wav_files`. The names of tone files should match the names of the wav files as shown in the sample.
+
+```
+python src/tone_preprocess.py -h
+
+usage: tone_preprocess.py [-h] [--bfilepath BFILEPATH] [--wfilepath WFILEPATH]
+                           [--sec_per_split SEC_PER_SPLIT] [--window_size WINDOW_SIZE]
+                           [--output_path OUTPUT_PATH]
+```
+**Currently Only Supports Fuzzy Labeling**
+
+2. Model Training
+
+The trained checkpoints are saved in Huggingface Hub. 
+
+```
+python src/train.py -h
+
+usage: train.py [-h] [--model_checkpoint MODEL_CHECKPOINT] [--file_train FILE_TRAIN] 
+                [--file_valid FILE_VALID] [--file_eval FILE_EVAL] [--num_epochs NUM_EPOCHS] 
+                [--batch_size BATCH_SIZE] [--file_output FILE_OUTPUT]
+                [--model_save_dir MODEL_SAVE_DIR] [--max_duration MAX_DURATION] [--mode MODE]
+                [--epochs_between_checkpoints EPOCHS_BETWEEN_CHECKPOINTS] [--lr_init LR_INIT]
+                [--lr_num_warmup_steps LR_NUM_WARMUP_STEPS] 
+                [--remove_last_label REMOVE_LAST_LABEL]
+
+```
+
+When running with tag `--mode eval` or `--mode both`, the model will output the file containing the results 
+when tested on the test data on the model, and will be saved in `FILE_OUTPUT`.
+
+3. Model Evaluation
+
+```
+python src/eval.py -h
+
+usage: eval.py [-h] [--file_eval FILE_EVAL] [--file_test FILE_TEST] [--file_ind FILE_IND] 
+               [--file_out FILE_OUT] (--peak | --flat)
+```
+Model evaluation requires the file containing ground truth `FILE_EVAL` (which can be obtained through 
+`src/preprocess.py`), and the file containing prediction results from the ground truth `FILE_TEST` (which 
+can be obtained from `src/train.py`). An example figure on `FILE_IND` will be outputed, containing the 
+comparison results between model prediction and the ground truth.
+
+## Prosody Boundary Prediction using Existing Checkpoint
+
+To perform prosody boundary prediction using existing checkpoints, follow the same process
+for data preprocessing as stated in step 1 for both processes. 
+
+#### Prosody Prediction
+
+**UNDER CONSTRUCTION**
+```
+python src/predict.py
+```
 
 ## Acknowledgement
 The code is greatly inspired by [mkunes/w2v2_audioFrameClassification][github-link] used in Kunešová, M., Řezáčková, M. (2022). Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0. In: International Conference on Text, Speech, and Dialogue (TSD 2022). LNAI vol. 13502, pp. 377-388. Springer. doi: 10.1007/978-3-031-16270-1_31 

@@ -161,10 +161,10 @@ def load_test(file_test):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Evaluating test performance')
-    parser.add_argument('--file_eval', type=str, default='/home/ubuntu/Wav2ToBI/data/output_json/test.json', help='Path to ground truth labels')
-    parser.add_argument('--file_test', type=str, default='/home/ubuntu/Wav2ToBI/data/output_json/test_output.txt', help='Path to predicted labels')
-    parser.add_argument('--file_ind', type=int, default=0, help='Index of file to plot')
-    parser.add_argument('--file_out', type=str, default='example_plot', help='Name of output file')
+    parser.add_argument('--file_eval', type=str, default='/home/ubuntu/Wav2ToBI/data/output_json/test_tone.json', help='Path to ground truth labels')
+    parser.add_argument('--file_test', type=str, default='/home/ubuntu/Wav2ToBI/data/output_json/test_output_tone.txt', help='Path to predicted labels')
+    parser.add_argument('--file_ind', type=int, default=1, help='Index of file to plot')
+    parser.add_argument('--file_out', type=str, default='img/example_plot', help='Name of output file')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--peak', action='store_true')
     group.add_argument('--flat', action='store_true')
