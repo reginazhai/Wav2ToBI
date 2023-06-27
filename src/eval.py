@@ -164,7 +164,7 @@ if __name__ == '__main__':
     parser.add_argument('--file_eval', type=str, default='/home/ubuntu/Wav2ToBI/data/output_json/test_tone.json', help='Path to ground truth labels')
     parser.add_argument('--file_test', type=str, default='/home/ubuntu/Wav2ToBI/data/output_json/test_output_tone.txt', help='Path to predicted labels')
     parser.add_argument('--file_ind', type=int, default=1, help='Index of file to plot')
-    parser.add_argument('--file_out', type=str, default='img/example_plot', help='Name of output file')
+    parser.add_argument('--plot_out', type=str, default='img/example_eval_plot', help='Name of output plot')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--peak', action='store_true')
     group.add_argument('--flat', action='store_true')
@@ -183,7 +183,7 @@ if __name__ == '__main__':
     plt.xlim(0, 1000)
     plt.ylim(0, 1.2)
     plt.legend(loc = 'upper right', fontsize = 'large')
-    plt.savefig(args.file_out + '.png', dpi=300, bbox_inches='tight')
+    plt.savefig(args.plot_out + '.png', dpi=300, bbox_inches='tight')
 
     if args.peak:
         # Get peaks in prediction and ground truth

@@ -19,16 +19,18 @@ conda create --name wav2tobi python=3.8
 pip install -r requirements.txt
 ```
 
+4. (Optional) Dataset
+The datasets used in the paper were the Boston University Radio News Corpus (BURNC) and the Boston Directions Corpus (BDC). Datasets should be stored under `data/` with different types of required files in their respective folder. The files required for intonational phrase boundary detection should be the .wav files and the .ton files, whereas the files required for pitch accent detection should be the .wav files and the .brk files. 
+
 ## Intonational Phrase Boundary Detection
 
-Sample Data files and format are provided under the `data/` directory. 
 
 ### Training Pipeline
 
 1. Data Preprocessing
 
 The break annotation files should be provided under `data/break_files`, and the wav files should be provided
-under `wav_files`. The names of break files should match the names of the wav files as shown in the sample.
+under `data/wav_files`. The names of break files should match the names of the wav files as shown in the sample.
 
 ```
 python src/break_preprocess.py -h
@@ -75,14 +77,12 @@ comparison results between model prediction and the ground truth.
 
 ## Pitch Accent Detection
 
-Sample Data files and format are provided under the `data/` directory. 
-
 ### Training Pipeline
 
 1. Data Preprocessing
 
 The tone annotation files should be provided under `data/tone_files`, and the wav files should be provided
-under `wav_files`. The names of tone files should match the names of the wav files as shown in the sample.
+under `data/wav_files`. The names of tone files should match the names of the wav files as shown in the sample.
 
 ```
 python src/tone_preprocess.py -h
@@ -133,8 +133,6 @@ for data preprocessing as stated in step 1 for both processes.
 
 #### Prosody Prediction
 
-**UNDER CONSTRUCTION**
-
 Checkpoints reported were uploaded into huggingface hub. Find the desired model among
 `ReginaZ/Wav2ToBI-PA-Flat`, `ReginaZ/Wav2ToBI-PA-Fuzzy`, `ReginaZ/Wav2ToBI-PB-Fuzzy`,
 `ReginaZ/Wav2ToBI-PB-Flat`.
@@ -144,7 +142,10 @@ the checkpoint for phrase boundary prediction has hidden size of 256. The parame
 be changed in `src/model.py`
 
 ```
-python src/predict.py
+python src/predict.py -h
+usage: predict.py [-h] [--model_checkpoint MODEL_CHECKPOINT] [--file_eval FILE_EVAL] [--file_ind FILE_IND] [--plot_out PLOT_OUT]
+                  [--batch_size BATCH_SIZE] [--max_duration MAX_DURATION] (--peak | --flat)
+
 ```
 
 ## Acknowledgement
