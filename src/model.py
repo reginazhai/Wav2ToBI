@@ -14,7 +14,7 @@ class Wav2Vec2ForAudioFrameClassification_custom(Wav2Vec2ForAudioFrameClassifica
         super().__init__(config)
         self.num_labels = config.num_labels
         # NOTE: change this parameter to change the size of the LSTM hidden state
-        self.lstm_hidden_size = 128 
+        self.lstm_hidden_size = 256 
         self.wav2vec2 = Wav2Vec2Model(config)
         self.lstm = nn.LSTM(config.hidden_size + 1, self.lstm_hidden_size, batch_first=True, bidirectional=True, num_layers=1)
         self.classifier = nn.Linear(self.lstm_hidden_size*2, config.num_labels)

@@ -190,9 +190,13 @@ if __name__ == '__main__':
         total_peaks = find_peaks_output(content_test)
         ground_peaks = find_peaks_eval(content_eval)
         eval_peaks(total_peaks, ground_peaks)
+        with open('data/output_json/eval_results.json', 'w') as f:
+            json.dump({'total_peaks': total_peaks, 'ground_peaks': ground_peaks}, f)
     elif args.flat:
         # Get flats in prediction and ground truth
         total_flat = find_flat_output(content_test)
         ground_flat = find_flat_eval(content_eval)
         eval_flats(total_flat, ground_flat)
+        with open('data/output_json/eval_results.json', 'w') as f:
+            json.dump({'total_flats': total_flat, 'ground_flats': ground_flat}, f)
 
