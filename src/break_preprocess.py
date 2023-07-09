@@ -50,6 +50,9 @@ if __name__ == '__main__':
     parser.add_argument('--sec_per_split', type=int, default=20, help='Duration of each split')
     parser.add_argument('--window_size', type=int, default=10, help='Window size')
     parser.add_argument('--output_path', type=str, default='/home/ubuntu/Wav2ToBI/data/output_json/test_break.json', help='Output path')
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('--peak', action='store_true')
+    group.add_argument('--flat', action='store_true')
     args = parser.parse_args()
 
     total_tones = {}
@@ -132,10 +135,16 @@ if __name__ == '__main__':
             while step < total_time:
                 if (cur_ind < len(total_list)) and (abs(int(total_list[cur_ind][0]/0.02) - step) <= 10):
                     if (total_list[cur_ind][2][0] == '4'):
-                        total_break.append(1 - abs(int(total_list[cur_ind][0]/0.02) - step)/10)
+                        if args.peak:
+                            total_break.append(1 - abs(int(total_list[cur_ind][0]/0.02) - step)/10)
+                        elif args.flat:
+                            total_break.append(1)
                     elif (total_list[cur_ind][2][0] == '3'):
                         if (abs(int(total_list[cur_ind][0]/0.02) - step) <= 5):
-                            total_break.append(0.5 - abs(int(total_list[cur_ind][0]/0.02) - step)/10)
+                            if args.peak:
+                                total_break.append(0.5 - abs(int(total_list[cur_ind][0]/0.02) - step)/10)
+                            elif args.flat:
+                                total_break.append(0.5)
                         elif (step - int(total_list[cur_ind][0]/0.02) > 5):
                             cur_ind += 1
                             total_break.append(0)
@@ -183,9 +192,9 @@ if __name__ == '__main__':
     # Plot the ground truth for debugging
     if DEBUG:
         from matplotlib import pyplot as plt
-        plt.rcParams["figure.figsize"] = (20,3)
-        plt.plot(json_file[0]["label"],label = "ground_truth", color = "blue")
-        plt.xlim(0, 1000)
+        plt.rcParams["figure.figsize"] = (10,3)
+        plt.plot(json_file[0]["label"][:500],label = "ground_truth", color = "blue")
+        plt.xlim(0, 500)
         plt.ylim(0, 1.2)
         plt.legend()
         plt.savefig('img/output_break.png')

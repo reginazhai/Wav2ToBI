@@ -13,7 +13,7 @@ def find_peaks_output(content_output):
       ## Found a valid peak
       if (max(cur_window) > 0.75) and (max(cur_window) == cur_pred[j]):
         cur_time = 0.02*(j+1)
-        cur_peak.append((cur_time, '1'))
+        cur_peak.append((cur_time, '4'))
     total_peaks.append(cur_peak)
   return total_peaks
 
@@ -27,7 +27,7 @@ def find_peaks_eval(content_eval):
       ## Found a valid peak
       if (max(cur_window) > 0.75) and (max(cur_window) == cur_pred[j]):
         cur_time = 0.02*(j+1)
-        cur_peak.append((cur_time, '1'))
+        cur_peak.append((cur_time, '4'))
     total_peaks.append(cur_peak)
   return total_peaks
 
@@ -75,7 +75,7 @@ def find_flat_output(content_output):
         mid_time = 0.02*(prev_pivot + cur_pivot)/2
         max_val = max(cur_pred[prev_pivot:cur_pivot])
         if max_val > 0.75:
-          cur_flat.append((mid_time, '1'))
+          cur_flat.append((mid_time, '4'))
         prev_pivot = cur_pivot
         cur_pivot += 1
       else:
@@ -99,7 +99,7 @@ def find_flat_eval(content_eval):
         mid_time = 0.02*(prev_pivot + cur_pivot)/2
         max_val = max(cur_pred[prev_pivot:cur_pivot])
         if max_val > 0.75:
-          cur_flat.append((mid_time, '1'))
+          cur_flat.append((mid_time, '4'))
         prev_pivot = cur_pivot
         cur_pivot += 1
       else:

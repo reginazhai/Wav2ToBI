@@ -64,6 +64,9 @@ if __name__ == '__main__':
     parser.add_argument('--window_size', type=int, default=10, help='Window size')
     parser.add_argument('--output_path', type=str, default='/home/ubuntu/Wav2ToBI/data/output_json/test_tone.json', help='Output path')
     parser.add_argument('--splitwav', action='store_true')
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('--peak', action='store_true')
+    group.add_argument('--flat', action='store_true')
     args = parser.parse_args()
 
     total_tones = {}
@@ -150,7 +153,12 @@ if __name__ == '__main__':
                 if (cur_ind < len(total_list)) and (abs(int(total_list[cur_ind][0]/0.02) - step) <= 8):
                     cur_sym = total_list[cur_ind][2]
                     if (cur_sym in PITCH_ACC) or (cur_sym in ORIG_PITCH_MAP):
-                        total_tone.append(1 - abs(int(total_list[cur_ind][0]/0.02) - step)/8)
+                        if args.peak:
+                            total_tone.append(1 - abs(int(total_list[cur_ind][0]/0.02) - step)/8)
+                        elif args.flat:
+                            total_tone.append(1)
+                        else:
+                            raise ValueError("Please specify the preprocessing type")
                     else:
                         cur_ind += 1
                         total_tone.append(0)

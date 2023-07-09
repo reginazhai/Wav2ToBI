@@ -52,10 +52,9 @@ class Wav2Vec2ForAudioFrameClassification_custom(Wav2Vec2ForAudioFrameClassifica
         x_ = torch.cat(tup,2)
         x_, (_, _) = self.lstm(x_)
         logits = self.classifier(x_)
-        labels = labels.reshape(-1,1) # 1xN -> Nx1
-
         loss = None
         if labels is not None:
+            labels = labels.reshape(-1,1) # 1xN -> Nx1
             loss_fct = MSELoss()
             loss = loss_fct(logits.view(-1, self.num_labels), labels)
 
