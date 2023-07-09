@@ -35,9 +35,9 @@ under `data/wav_files`. The names of break files should match the names of the w
 ```
 python src/break_preprocess.py -h
 
-usage: break_preprocess.py [-h] [--bfilepath BFILEPATH] [--wfilepath WFILEPATH]
+usage: break_preprocess.py [-h] [--bfilepath BFILEPATH] [--wfilepath WFILEPATH] 
                            [--sec_per_split SEC_PER_SPLIT] [--window_size WINDOW_SIZE]
-                           [--output_path OUTPUT_PATH]
+                           [--output_path OUTPUT_PATH] (--peak | --flat)
 ```
 **Currently Only Supports Fuzzy Labeling**
 
@@ -87,11 +87,10 @@ under `data/wav_files`. The names of tone files should match the names of the wa
 ```
 python src/tone_preprocess.py -h
 
-usage: tone_preprocess.py [-h] [--bfilepath BFILEPATH] [--wfilepath WFILEPATH]
-                           [--sec_per_split SEC_PER_SPLIT] [--window_size WINDOW_SIZE]
-                           [--output_path OUTPUT_PATH]
+usage: tone_preprocess.py [-h] [--tfilepath TFILEPATH] [--wfilepath WFILEPATH] 
+                          [--sec_per_split SEC_PER_SPLIT] [--window_size WINDOW_SIZE]
+                          [--output_path OUTPUT_PATH] [--splitwav] (--peak | --flat)
 ```
-**Currently Only Supports Fuzzy Labeling**
 
 2. Model Training
 
@@ -143,8 +142,10 @@ be changed in `src/model.py`
 
 ```
 python src/predict.py -h
-usage: predict.py [-h] [--model_checkpoint MODEL_CHECKPOINT] [--file_eval FILE_EVAL] [--file_ind FILE_IND] [--plot_out PLOT_OUT]
-                  [--batch_size BATCH_SIZE] [--max_duration MAX_DURATION] (--peak | --flat)
+usage: predict.py [-h] [--model_checkpoint MODEL_CHECKPOINT] [--input_path INPUT_PATH] 
+                  [--file_eval FILE_EVAL] [--file_ind FILE_IND]
+                  [--file_out FILE_OUT] [--batch_size BATCH_SIZE] [--max_duration MAX_DURATION] 
+                  (--peak | --flat)
 
 ```
 
