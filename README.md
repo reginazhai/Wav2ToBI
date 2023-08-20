@@ -1,7 +1,5 @@
 # Wav2ToBI
 
-***Under Construction***
-
 This repository contains code used in the paper "[Wav2ToBI: a new approach to automatic ToBI transcription][paper-link]" accepted at Interspeech 2023.
 
 ## Setup
@@ -39,7 +37,6 @@ usage: break_preprocess.py [-h] [--bfilepath BFILEPATH] [--wfilepath WFILEPATH]
                            [--sec_per_split SEC_PER_SPLIT] [--window_size WINDOW_SIZE]
                            [--output_path OUTPUT_PATH] (--peak | --flat)
 ```
-**Currently Only Supports Fuzzy Labeling**
 
 2. Model Training
 

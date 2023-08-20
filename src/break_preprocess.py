@@ -1,47 +1,10 @@
 import json
-import numpy as np
-import math
 import os
 import soundfile
 import argparse
-from pydub import AudioSegment
+from utils import SplitWavAudioMubin, is_float, SUFFIX_LEN
 
 DEBUG = True
-
-# Splitting .wav files
-# Code Splitting adapted from https://stackoverflow.com/questions/37999150/how-to-split-a-wav-file-into-multiple-wav-files @Shariful Islam Mubin
-
-class SplitWavAudioMubin():
-    def __init__(self, folder = None, filename = None):
-        self.folder = folder
-        self.filename = filename
-        self.filepath = folder + '/' + filename
-        self.audio = AudioSegment.from_wav(self.filepath)
-    
-    def get_duration(self):
-        return self.audio.duration_seconds
-    
-    def single_split(self, from_sec, to_sec, split_filename):
-        t1 = from_sec * 1000
-        t2 = to_sec * 1000
-        split_audio = self.audio[t1:t2]
-        if not os.path.exists(self.folder + '/sliding/'):
-            os.makedirs(self.folder + '/sliding/')
-        split_audio.export(self.folder + '/sliding/' + split_filename, format="wav")
-        
-    def multiple_split(self, sec_per_split, window_size):
-        total_mins = math.ceil(self.get_duration())
-        print("Total Seconds:", total_mins)
-        total_time = np.arange(0.0,total_mins, window_size)
-        for tim in range(len(total_time)):
-            i = total_time[tim]
-            split_fn = str(tim) + '_' + self.filename
-            self.single_split(i, i+sec_per_split, split_fn)
-            print("Time:", str(i) + ' Done')
-            if sec_per_split >= (total_mins - i):
-                print('All splited successfully')
-                break
-        
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Splitting .wav files')
@@ -59,17 +22,10 @@ if __name__ == '__main__':
     bfiles = os.listdir(args.bfilepath)
     wfiles = os.listdir(args.wfilepath)
 
-    def is_float(element):
-        try:
-            float(element)
-            return True
-        except ValueError:
-            return False
-
     total_doc = []
     for i in range(len(bfiles)):
         bfilen = bfiles[i]
-        wfile = bfilen[:-4] + '.wav'
+        wfile = bfilen[:-SUFFIX_LEN] + 'wav'
         if (wfile not in wfiles):
             continue
         wavfile = SplitWavAudioMubin(args.wfilepath, wfile).multiple_split(args.sec_per_split, args.window_size)
@@ -95,7 +51,7 @@ if __name__ == '__main__':
                 parts[2] = "0"
             else:
                 parts[2] = parts[2][0]
-            bfilen_mod = bfilen[:-4] + '.wav'
+            bfilen_mod = bfilen[:-SUFFIX_LEN] + 'wav'
             if (bfilen_mod in wfiles):
                 parts.append(bfilen_mod)
             else:
@@ -154,7 +110,7 @@ if __name__ == '__main__':
                         cur_ind += 1
                         total_break.append(0)
                     
-                elif (cur_ind < len(total_list)) and (step - int(total_list[cur_ind][0]/0.02) > 8):
+                elif (cur_ind < len(total_list)) and (step - int(total_list[cur_ind][0]/0.02) > 10):
                         cur_ind += 1
                         total_break.append(0)
                     
@@ -192,9 +148,9 @@ if __name__ == '__main__':
     # Plot the ground truth for debugging
     if DEBUG:
         from matplotlib import pyplot as plt
-        plt.rcParams["figure.figsize"] = (10,3)
-        plt.plot(json_file[0]["label"][:500],label = "ground_truth", color = "blue")
-        plt.xlim(0, 500)
+        plt.rcParams["figure.figsize"] = (20,3)
+        plt.plot(json_file[0]["label"],label = "ground_truth", color = "blue")
+        plt.xlim(0, 1000)
         plt.ylim(0, 1.2)
         plt.legend()
         plt.savefig('img/output_break.png')
