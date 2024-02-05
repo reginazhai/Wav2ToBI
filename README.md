@@ -8,11 +8,11 @@ This repository contains code used in the paper "[Wav2ToBI: a new approach to au
 
 2. Create & activate conda environment with python version 3.8
 
-2.1
+
 ```
 conda create --name wav2tobi python=3.8
 ```
-2.2
+
 ```
 conda activate wav2tobi
 ```
