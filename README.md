@@ -11,9 +11,6 @@ This repository contains code used in the paper "[Wav2ToBI: a new approach to au
 
 ```
 conda create --name wav2tobi python=3.8
-```
-
-```
 conda activate wav2tobi
 ```
 
