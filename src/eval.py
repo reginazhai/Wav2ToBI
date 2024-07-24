@@ -3,7 +3,7 @@ import argparse
 from matplotlib import pyplot as plt
 
 ## Find peaks in prediction
-def find_peaks_output(content_output):
+def find_peaks_output(content_output, marker='4'):
   total_peaks = []
   for i in range(len(content_output)):
     cur_peak = []
@@ -13,11 +13,11 @@ def find_peaks_output(content_output):
       ## Found a valid peak
       if (max(cur_window) > 0.75) and (max(cur_window) == cur_pred[j]):
         cur_time = 0.02*(j+1)
-        cur_peak.append((cur_time, '4'))
+        cur_peak.append((cur_time, marker))
     total_peaks.append(cur_peak)
   return total_peaks
 
-def find_peaks_eval(content_eval):
+def find_peaks_eval(content_eval, marker='4'):
   total_peaks = []
   for i in range(len(content_eval)):
     cur_peak = []
@@ -27,7 +27,7 @@ def find_peaks_eval(content_eval):
       ## Found a valid peak
       if (max(cur_window) > 0.75) and (max(cur_window) == cur_pred[j]):
         cur_time = 0.02*(j+1)
-        cur_peak.append((cur_time, '4'))
+        cur_peak.append((cur_time, marker))
     total_peaks.append(cur_peak)
   return total_peaks
 

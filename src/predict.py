@@ -118,6 +118,10 @@ if __name__ == '__main__':
     plt.legend(loc = 'lower right', fontsize = 'small')
     plt.savefig(args.file_out + '.png', dpi=300, bbox_inches='tight')
 
+    # Check if output path exists
+    if not os.path.exists('data/output_json'):
+        os.makedirs('data/output_json')
+
     if args.peak:
         # Get peaks in prediction and ground truth
         total_peaks = find_peaks_output(content_test)
